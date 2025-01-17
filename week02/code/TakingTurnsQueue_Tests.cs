@@ -11,7 +11,7 @@ public class TakingTurnsQueueTests
     // Scenario: Create a queue with the following people and turns: Bob (2), Tim (5), Sue (3) and
     // run until the queue is empty
     // Expected Result: Bob, Tim, Sue, Bob, Tim, Sue, Tim, Sue, Tim, Tim
-    // Defect(s) Found: 
+    // Defect(s) Found: The error is that when the assert runs it shows that Sue does not equal Bob. They are not equal. The error lies in the Enqueue function. In the Enqueue function, the Insert method is used to add a person to the front of the queue. The fix is to change the .Insert(0, person); to .Add(person); so that the newly added person is added to the back of the queue and not the front.
     public void TestTakingTurnsQueue_FiniteRepetition()
     {
         var bob = new Person("Bob", 2);
@@ -43,7 +43,7 @@ public class TakingTurnsQueueTests
     // Scenario: Create a queue with the following people and turns: Bob (2), Tim (5), Sue (3)
     // After running 5 times, add George with 3 turns.  Run until the queue is empty.
     // Expected Result: Bob, Tim, Sue, Bob, Tim, Sue, Tim, George, Sue, Tim, George, Tim, George
-    // Defect(s) Found: 
+    // Defect(s) Found: The error for this test was the same as the previous test. The error is that when the assert runs it shows that Sue does not equal Bob. They are not equal. The error lies in the Enqueue function. In the Enqueue function, the Insert method is used to add a person to the front of the queue. The fix is to change the .Insert(0, person); to .Add(person); so that the newly added person is added to the back of the queue and not the front.
     public void TestTakingTurnsQueue_AddPlayerMidway()
     {
         var bob = new Person("Bob", 2);
@@ -85,7 +85,7 @@ public class TakingTurnsQueueTests
     // Scenario: Create a queue with the following people and turns: Bob (2), Tim (Forever), Sue (3)
     // Run 10 times.
     // Expected Result: Bob, Tim, Sue, Bob, Tim, Sue, Tim, Sue, Tim, Tim
-    // Defect(s) Found: 
+    // Defect(s) Found: The error that was shows was that the Assert.AreEqual returns that Sue != Tim.  The error was in the Get next person function. That function did not accomidate for the issue of having a special case for infinite turns. Before if there was a person with 0 or infinite turns the code did not add that person back to the queue. I changed the GetNextPerson() code to check if someone had 0 or less turns and to always add that person back into the queue. 
     public void TestTakingTurnsQueue_ForeverZero()
     {
         var timTurns = 0;
@@ -143,7 +143,7 @@ public class TakingTurnsQueueTests
     [TestMethod]
     // Scenario: Try to get the next person from an empty queue
     // Expected Result: Exception should be thrown with appropriate error message.
-    // Defect(s) Found: 
+    // Defect(s) Found: There is no defect found in this test when I run
     public void TestTakingTurnsQueue_Empty()
     {
         var players = new TakingTurnsQueue();
