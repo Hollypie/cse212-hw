@@ -24,7 +24,7 @@
 
         // Find the index of the item with the highest priority to remove
         var highPriorityIndex = 0;
-        for (int index = 1; index < _queue.Count - 1; index++)
+        for (int index = 0; index < _queue.Count - 1; index++)
         {
             if (_queue[index].Priority >= _queue[highPriorityIndex].Priority)
                 highPriorityIndex = index;
@@ -32,13 +32,44 @@
 
         // Remove and return the item with the highest priority
         var value = _queue[highPriorityIndex].Value;
+        _queue.RemoveAt(highPriorityIndex);
         return value;
+    }
+    
+    public string ReturnLast()
+    {
+        if (_queue.Count == 0) // Verify the queue is not empty
+        {
+            throw new InvalidOperationException("The queue is empty.");
+        }
+
+        // Remove and return the item with the highest priority
+        var value = _queue[_queue.Count - 1].Value;
+        return value;
+    }
+
+    public string ReturnPriority_Last()
+    {
+        if (_queue.Count == 0) // Verify the queue is not empty
+        {
+            throw new InvalidOperationException("The queue is empty.");
+        }
+
+        var priority = _queue[_queue.Count-1].Priority;
+        var stringPriority = priority.ToString();
+        return stringPriority;
+    }
+
+    public int GetQueueSize()
+    {
+        return _queue.Count;
     }
 
     public override string ToString()
     {
         return $"[{string.Join(", ", _queue)}]";
     }
+
 }
 
 internal class PriorityItem
