@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Text.Json;
 
 public static class SetsAndMaps
@@ -22,7 +23,32 @@ public static class SetsAndMaps
     public static string[] FindPairs(string[] words)
     {
         // TODO Problem 1 - ADD YOUR CODE HERE
-        return [];
+        HashSet<string> pairs = new HashSet<string>(); 
+        HashSet<string> seen = new HashSet<string>(); 
+
+        foreach (string item in words)
+        {
+            if (!seen.Contains(item))
+            {
+                seen.Add(item);
+            }
+
+            string otherHalf = item[1].ToString() + item[0].ToString();
+
+            if (item[0].ToString() == item[1].ToString())
+            {
+                ;
+            }
+            else if (seen.Contains(otherHalf))
+            {
+                string pair = $"{item} & {otherHalf}";
+                pairs.Add(pair);
+            }
+
+        }
+
+        string[] results = pairs.ToArray();
+        return results;
     }
 
     /// <summary>
@@ -38,12 +64,25 @@ public static class SetsAndMaps
     /// <returns>fixed array of divisors</returns>
     public static Dictionary<string, int> SummarizeDegrees(string filename)
     {
+        
         var degrees = new Dictionary<string, int>();
         foreach (var line in File.ReadLines(filename))
         {
             var fields = line.Split(",");
             // TODO Problem 2 - ADD YOUR CODE HERE
+            var degree = fields[3];
+            if (degrees.ContainsKey(degree))
+            {
+                int degreeCount = degrees[degree];
+                degrees[degree] = degreeCount + 1;
+            } 
+            else
+            {
+                degrees.Add(degree, 1);
+            }
+
         }
+        
 
         return degrees;
     }
@@ -67,7 +106,44 @@ public static class SetsAndMaps
     public static bool IsAnagram(string word1, string word2)
     {
         // TODO Problem 3 - ADD YOUR CODE HERE
-        return false;
+        // Remove spaces
+        string formattedWord1 = word1.Replace(" ", "");
+        formattedWord1 = formattedWord1.ToLower();
+        string formattedWord2 = word2.Replace(" ", "");
+        formattedWord2 = formattedWord2.ToLower();
+
+        var word1Dict = new Dictionary<char, int>();
+        var word2Dict = new Dictionary<char, int>();
+
+        foreach (char letter in formattedWord1)
+        {
+            if (word1Dict.ContainsKey(letter))
+            {
+                int letterCount = word1Dict[letter];
+                word1Dict[letter] = letterCount + 1;
+            }
+            else 
+            {
+                word1Dict.Add(letter, 1);
+            }
+        }
+
+        foreach (char letter in formattedWord2)
+        {
+            if (word2Dict.ContainsKey(letter))
+            {
+                int letterCount = word2Dict[letter];
+                word2Dict[letter] = letterCount + 1;
+            }
+            else 
+            {
+                word2Dict.Add(letter, 1);
+            }
+        }
+
+        bool areEqual = word1Dict.OrderBy(kvp => kvp.Key).SequenceEqual(word2Dict.OrderBy(kvp => kvp.Key));
+        
+        return areEqual;
     }
 
     /// <summary>
