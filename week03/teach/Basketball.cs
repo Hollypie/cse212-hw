@@ -19,6 +19,8 @@ public class Basketball
     {
         var players = new Dictionary<string, int>();
 
+        var stats = new Dictionary<string, int>(); 
+
         using var reader = new TextFieldParser("basketball.csv");
         reader.TextFieldType = FieldType.Delimited;
         reader.SetDelimiters(",");
@@ -27,10 +29,17 @@ public class Basketball
             var fields = reader.ReadFields()!;
             var playerId = fields[0];
             var points = int.Parse(fields[8]);
+            stats.Add(playerId, points);
         }
+
+        string[] statsArray = stats.Keys.ToArray();
 
         Console.WriteLine($"Players: {{{string.Join(", ", players)}}}");
 
         var topPlayers = new string[10];
+
+        
+
+
     }
 }
