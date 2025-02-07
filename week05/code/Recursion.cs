@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Runtime.InteropServices;
+using Microsoft.VisualStudio.TestPlatform.CoreUtilities.Extensions;
 
 public static class Recursion
 {
@@ -15,7 +17,14 @@ public static class Recursion
     public static int SumSquaresRecursive(int n)
     {
         // TODO Start Problem 1
-        return 0;
+        if (n <= 0)
+        {
+            return 0;
+        }
+        else
+        {
+            return (n * n) + SumSquaresRecursive(n - 1);
+        }
     }
 
     /// <summary>
@@ -40,6 +49,21 @@ public static class Recursion
     public static void PermutationsChoose(List<string> results, string letters, int size, string word = "")
     {
         // TODO Start Problem 2
+        // Try adding each of the available letters
+        // to the 'word' and add up all the
+        // resulting permutations.
+        if (word.Length == size)
+        {
+            results.Add(word);
+        }
+        else
+        {
+            for (var i = 0; i < letters.Length; i++)
+            {
+                var lettersleft = letters.Substring(0, i) + letters.Substring(i + 1);
+                PermutationsChoose(results, lettersleft, size, word + letters[i]);
+            }
+        }
     }
 
     /// <summary>
@@ -97,10 +121,19 @@ public static class Recursion
             return 4;
 
         // TODO Start Problem 3
+        if (remember == null)
+            remember = new Dictionary<int, decimal>();
+
+        if (remember.ContainsKey(s))
+            return remember[s];
 
         // Solve using recursion
-        decimal ways = CountWaysToClimb(s - 1) + CountWaysToClimb(s - 2) + CountWaysToClimb(s - 3);
+        decimal ways = CountWaysToClimb(s - 1, remember) + CountWaysToClimb(s - 2, remember) + CountWaysToClimb(s - 3, remember);
+
+        remember[s] = ways;
+
         return ways;
+
     }
 
     /// <summary>
@@ -111,7 +144,7 @@ public static class Recursion
     /// a binary string.  If we introduce a wildcard symbol * into the string, we can say that 
     /// this is now a pattern for multiple binary strings.  For example, 101*1 could be used 
     /// to represent 10101 and 10111.  A pattern can have more than one * wildcard.  For example, 
-    /// 1**1 would result in 4 different binary strings: 1001, 1011, 1101, and 1111.
+    ///     1**1 would result in 4 different binary strings: 1001, 1011, 1101, and 1111.
     ///	
     /// Using recursion, insert all possible binary strings for a given pattern into the results list.  You might find 
     /// some of the string functions like IndexOf and [..X] / [X..] to be useful in solving this problem.
@@ -119,6 +152,26 @@ public static class Recursion
     public static void WildcardBinary(string pattern, List<string> results)
     {
         // TODO Start Problem 4
+        // find the index of the first occurrence of "*"
+        if (pattern.IndexOf("*") == -1)
+        {
+            results.Add(pattern);
+        }
+        else
+        {
+            string newString1 = "";
+            string newString2 = "";
+            int index = pattern.IndexOf("*");
+
+            string charactersLeft = pattern.Substring(0, index);
+            string result = pattern.Remove(0, index + 1);
+
+            newString1 = charactersLeft + "1" + result;
+            newString2 = charactersLeft + "0" + result;
+
+            WildcardBinary(newString1, results);
+            WildcardBinary(newString2, results);
+        }
     }
 
     /// <summary>
@@ -129,15 +182,51 @@ public static class Recursion
     {
         // If this is the first time running the function, then we need
         // to initialize the currPath list.
-        if (currPath == null) {
+        if (currPath == null)
+        {
             currPath = new List<ValueTuple<int, int>>();
         }
-        
+
         // currPath.Add((1,2)); // Use this syntax to add to the current path
 
         // TODO Start Problem 5
-        // ADD CODE HERE
+        // ADD CODE HERE     
 
+        var currLocation = (x, y);
+        currPath.Add(currLocation);
+
+        if (maze.IsEnd(currLocation.Item1, currLocation.Item2))
+        {
+            results.Add(currPath.AsString());
+        }
+        else 
+        {
+            // create a list storing the values of each direction possible.
+            List<(int, int)> directions = new List<(int, int)>
+            {
+                (1, 0),
+                (0, -1),
+                (-1, 0),
+                (0, 1)
+            };
+            // check if there is a valid move from this location
+            foreach ((int dx, int dy) in directions)
+            {
+                // Calculate the new location
+                
+                if (maze.IsValidMove(currPath, x + dx, y + dy))
+                {
+                    int newX = x + dx;
+                    int newY = y + dy;
+                    if (!currPath.Contains((newX, newY)))
+                    {
+                        SolveMaze(results, maze, newX, newY, currPath);
+                        currPath.RemoveAt(currPath.Count - 1);
+                    }
+                    
+                }
+            }
+        }
         // results.Add(currPath.AsString()); // Use this to add your path to the results array keeping track of complete maze solutions when you find the solution.
     }
 }
